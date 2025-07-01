@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dice1, Search, Bell, User, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -34,20 +33,26 @@ const Header = () => {
             <Link to="/games" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">게임추천</Link>
             <Link to="/party" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">일행모집</Link>
             <Link to="/cafes" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">카페찾기</Link>
-            <a href="#" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">중고거래</a>
+            <Link to="/trade" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">중고 보드게임 거래</Link>
           </nav>
 
           {/* User Actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="hidden md:flex">
-              <Bell className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" size="sm" className="hidden md:flex">
-              <User className="w-4 h-4" />
-            </Button>
-            <Button size="sm" className="hidden md:flex bg-orange-500 hover:bg-orange-600 text-white">
-              로그인
-            </Button>
+            <Link to="/alarm">
+              <Button variant="ghost" size="sm" className="hidden md:flex">
+                <Bell className="w-4 h-4" />
+              </Button>
+            </Link>
+            <Link to="/mypage">
+              <Button variant="ghost" size="sm" className="hidden md:flex">
+                <User className="w-4 h-4" />
+              </Button>
+            </Link>
+            <Link to="/login">
+              <Button size="sm" className="hidden md:flex bg-orange-500 hover:bg-orange-600 text-white">
+                로그인
+              </Button>
+            </Link>
             
             {/* Mobile menu button */}
             <Button 
@@ -76,7 +81,7 @@ const Header = () => {
                 <Link to="/games" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">게임추천</Link>
                 <Link to="/party" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">일행모집</Link>
                 <Link to="/cafes" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">카페찾기</Link>
-                <a href="#" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">중고거래</a>
+                <Link to="/trade" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">중고 보드게임 거래</Link>
               </nav>
               <div className="flex space-x-2 pt-2">
                 <Button size="sm" className="flex-1 bg-orange-500 hover:bg-orange-600 text-white">

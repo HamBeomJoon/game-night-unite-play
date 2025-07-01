@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, MapPin, Clock, Phone, Star, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -117,7 +116,7 @@ const CafeFinder = () => {
   }, [searchTerm, selectedRegion]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 py-8">

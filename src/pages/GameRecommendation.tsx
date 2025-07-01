@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, Filter, Star, Users, Clock, TrendingUp, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,7 @@ const GameRecommendation = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [selectedDifficulty, setSelectedDifficulty] = useState('전체');
+  const [popularType, setPopularType] = useState<'rating' | 'review' | 'players'>('rating');
 
   const categories = ['전체', '전략', '파티', '협력', '추리', '덱빌딩', '워커플레이스먼트'];
   const difficulties = ['전체', '쉬움', '보통', '어려움'];
@@ -107,6 +107,35 @@ const GameRecommendation = () => {
     }
   ];
 
+  // 샘플 후기/평점/플레이 인원 데이터 (실제 데이터라면 서버에서 받아와야 함)
+  const gameReviews = {
+    '스플렌더': 12,
+    '티켓 투 라이드': 8,
+    '코드네임': 20,
+    '아줄': 15,
+    '윙스팬': 7,
+    '텔레스트레이션': 18,
+    '팬데믹': 10,
+    '도미니언': 5,
+  };
+
+  // 인기 게임 정렬
+  let popularGames = [...allGames];
+  if (popularType === 'rating') {
+    popularGames.sort((a, b) => b.rating - a.rating);
+  } else if (popularType === 'review') {
+    popularGames.sort((a, b) => (gameReviews[b.title] || 0) - (gameReviews[a.title] || 0));
+  } else if (popularType === 'players') {
+    // 인원수 최대값 기준 내림차순 정렬
+    const getMaxPlayers = (game) => {
+      const match = game.players.match(/(\d+)(-|~)?(\d+)?/);
+      if (!match) return 0;
+      return match[3] ? parseInt(match[3]) : parseInt(match[1]);
+    };
+    popularGames.sort((a, b) => getMaxPlayers(b) - getMaxPlayers(a));
+  }
+  popularGames = popularGames.slice(0, 5);
+
   const filteredGames = allGames.filter(game => {
     const matchesSearch = game.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          game.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -120,6 +149,43 @@ const GameRecommendation = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
       <Header />
       
+      {/* 인기 게임 리스트 섹션 */}
+      <section className="py-8 px-4 max-w-4xl mx-auto">
+        <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <h2 className="text-2xl font-bold text-gray-800">인기 게임 Top 5</h2>
+          <div className="flex gap-2">
+            <button
+              className={`px-4 py-1 rounded-full border text-sm font-medium transition-colors ${popularType === 'rating' ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-gray-700 border-orange-200 hover:bg-orange-50'}`}
+              onClick={() => setPopularType('rating')}
+            >평점순</button>
+            <button
+              className={`px-4 py-1 rounded-full border text-sm font-medium transition-colors ${popularType === 'review' ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-gray-700 border-orange-200 hover:bg-orange-50'}`}
+              onClick={() => setPopularType('review')}
+            >후기순</button>
+            <button
+              className={`px-4 py-1 rounded-full border text-sm font-medium transition-colors ${popularType === 'players' ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-gray-700 border-orange-200 hover:bg-orange-50'}`}
+              onClick={() => setPopularType('players')}
+            >플레이 인원순</button>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {popularGames.map((game, idx) => (
+            <div key={game.title} className="bg-white/90 rounded-xl shadow p-4 flex flex-col gap-2 hover:shadow-lg transition-all">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg font-bold text-orange-500">#{idx + 1}</span>
+                <span className="font-semibold text-gray-800">{game.title}</span>
+              </div>
+              <div className="text-sm text-gray-600 mb-1 line-clamp-2">{game.description}</div>
+              <div className="flex gap-3 text-xs text-gray-500">
+                <span>평점 <span className="font-bold text-orange-600">{game.rating}</span></span>
+                <span>후기 <span className="font-bold text-orange-600">{gameReviews[game.title] || 0}</span></span>
+                <span>인원 <span className="font-bold text-orange-600">{game.players}</span></span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="py-12 px-4 bg-white/50">
         <div className="max-w-7xl mx-auto text-center">

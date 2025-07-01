@@ -1,73 +1,85 @@
-# Welcome to your Lovable project
+# 보드게임 통합 플랫폼
 
-## Project info
+### Project URL
+- https://preview--game-night-unite-play.lovable.app
 
-**URL**: https://lovable.dev/projects/4a862868-9d36-4cb8-9897-e0b4ce8d5e13
 
-## How can I edit this code?
+### 페르소나
+---
+최지훈 (17세, 고등학생)
+- 목표: 친구들과 주말에 보드게임하고 싶음
+- 고민: 갈 때마다 같은 게임만 하고, 규칙도 몰라서 그냥 했던 것만 함
+- 사용 이유: 장르별로 인기 있는 게임을 알아보고, 친구들 의견 반영해서 선택하고 싶음
+- 필요 기능: 평점/후기 기반 추천, 쉬운 게임 추천, 룰 영상 링크 제공
 
-There are several ways of editing your application.
+이예진 (22세, 대학생)
+- 목표: 다양한 사람들과 보드게임 하고 싶음
+- 고민: 하고 싶은 게임은 있는데 같이 할 사람이 없음
+- 사용 이유: 모르는 사람들과도 모임 만들고, 선호 장르 맞춰서 모집하고 싶음
+- 필요 기능: 일행 모집, 룰마스터 태그, 선호 장르 필터
 
-**Use Lovable**
+김수혁 (30세, 직장인)
+- 목표: 퇴근 후 간단한 게임 즐기고 싶음
+- 고민: 카페에 가도 룰 모르는 게임은 피하게 됨
+- 사용 이유: 룰마스터와 함께 모임에 참여하거나, 간단한 게임만 추려서 보고 싶음
+- 필요 기능: 룰마스터 모집 글 보기, 난이도 필터, 후기 기반 추천
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4a862868-9d36-4cb8-9897-e0b4ce8d5e13) and start prompting.
+정진서 (28세, 보드게임 매니아)
+- 목표: 전략 보드게임을 좋아하고, 다른 사람에게도 설명해주는 걸 좋아함
+- 고민: 게임할 사람 찾기 힘들고, 보드게임 교환도 하고 싶음
+- 사용 이유: 룰마스터로 참여하고, 리뷰 남기고, 중고 거래도 하고 싶음
+- 필요 기능: 거래소, 후기 작성, 룰마스터로 표시 가능
 
-Changes made via Lovable will be committed automatically to this repo.
+최상우 (45세, 보드게임 카페 사장)
+- 목표: 손님들에게 다양한 게임을 추천하고 싶음
+- 고민: 게임 책자는 매번 같은 게임만 소개되고 업데이트가 느림
+- 사용 이유: 사용자 리뷰 기반으로 추천 리스트 대체하고 싶고, 이벤트 모집도 원함
+- 필요 기능: 추천 리스트 자동화, 룰마스터 등록 기능, 커뮤니티 홍보
 
-**Use your preferred IDE**
+---
+### 사용자 시나리오
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- 시나리오 1: 지훈 – 친구들과 새로운 게임을 해보고 싶다
+    * 목표: 다양한 보드게임을 경험하고 싶은데, 매번 같은 게임만 하게 되는 상황을 벗어나고 싶다.
+    * 시나리오
+        1. 앱에서 "초보자 추천 게임" 카테고리를 탐색한다.
+        2. 평점이 높고 쉬운 게임을 확인하고 친구들에게 공유한다.
+        3. 룰 영상 또는 요약 설명을 통해 사전 학습한 뒤, 보드게임 카페에서 게임을 즐긴다.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- 시나리오 2: 예진 – 새로운 사람들과 보드게임을 하고 싶다
+    * 목표: 보드게임을 하고 싶은데 주변에 함께할 사람이 없어서 낯선 사람들과도 즐기고 싶다.
+    * 시나리오
+        1. '일행 모집' 게시판에서 전략 보드게임 모임을 찾는다.
+        2. 글에서 룰마스터 포함 여부와 선호 장르를 확인한 후 참여 신청을 한다.
+        3. 약속된 시간에 장소로 가서 새로운 사람들과 게임을 진행한다.
 
-Follow these steps:
+- 시나리오 3: 진서 – 룰마스터로 참여하고 싶다
+    * 목표: 다양한 사람들과 보드게임을 즐기며, 본인의 룰 설명 능력을 활용하고 싶다.
+    * 시나리오
+        1. 앱의 ‘모집’ 게시판에 "룰마 가능" 태그와 함께 모임 글을 작성한다.
+        2. 사용자들이 댓글이나 신청 버튼을 통해 참여 의사를 밝힌다.
+        3. 약속 장소에서 룰을 설명하고 함께 게임을 진행한다.
+        4. 게임이 끝난 후 리뷰나 평점을 받고 기록을 남긴다.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- 시나리오 4: 상우 – 보드게임 카페에서 추천 리스트를 더 효율적으로 운영하고 싶다
+    * 목표: 손님들이 항상 같은 게임만 하지 않도록 다양하고 인기 있는 게임을 소개하고 싶다.
+    * 시나리오
+        1. 앱에서 평점, 후기, 플레이 인원 기반의 인기 게임 리스트를 출력한다.
+        2. 출력한 리스트를 테이블마다 QR 코드 형태로 부착해 손님이 스캔해서 확인할 수 있게 한다.
+        3. 초보자 손님에게는 룰마스터 등록 이용자를 연결해 도움을 제공한다.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- 시나리오 5: 진서 – 중고 보드게임을 판매하고 싶다
+    * 목표: 안 쓰는 보드게임을 팔고, 다른 유저에게 필요한 게임을 전달하고 싶다.
+    * 시나리오
+        1. 앱의 '거래소' 탭에 판매 글을 등록한다 (사진, 설명, 희망가 포함).
+        2. 관심 있는 사람이 채팅으로 연락해 오면, 거래 일정을 조율한다.
+        3. 약속 장소에서 직거래하거나 택배로 거래를 완료한다.
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/4a862868-9d36-4cb8-9897-e0b4ce8d5e13) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- 시나리오 6: 수혁 – 퇴근 후 간단한 게임을 쉽게 즐기고 싶다
+    * 목표: 퇴근 후 머리 쓰지 않고 가볍게 즐길 수 있는 보드게임을 빠르게 찾아서 하고 싶다.
+    * 시나리오
+        1. 퇴근길에 앱을 열고, '간단한 게임' 필터(난이도: 쉬움, 플레이타임: 30분 이내)를 적용해 살펴본다.
+        2. 후기 평점이 좋은 파티 게임을 발견하고, 근처 보드게임 카페에서 가능한지도 함께 확인한다.
+        3. ‘룰마스터 포함’ 태그가 달린 일행 모집 글이 있어 부담 없이 참여 신청을 한다.
+        4. 정해진 시간에 카페에 도착하여, 룰 설명을 들은 후 모르는 사람들과 편하게 게임을 즐긴다.
+        5. 게임이 끝난 후 간단한 후기와 별점을 남긴다.

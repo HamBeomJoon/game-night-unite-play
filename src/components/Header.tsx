@@ -33,7 +33,7 @@ const Header = () => {
           <nav className="hidden md:flex items-center space-x-8">
             <Link to="/games" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">게임추천</Link>
             <Link to="/party" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">일행모집</Link>
-            <a href="#" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">카페찾기</a>
+            <Link to="/cafes" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">카페찾기</Link>
             <a href="#" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">중고거래</a>
           </nav>
 
@@ -75,7 +75,7 @@ const Header = () => {
               <nav className="space-y-2">
                 <Link to="/games" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">게임추천</Link>
                 <Link to="/party" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">일행모집</Link>
-                <a href="#" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">카페찾기</a>
+                <Link to="/cafes" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">카페찾기</Link>
                 <a href="#" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">중고거래</a>
               </nav>
               <div className="flex space-x-2 pt-2">

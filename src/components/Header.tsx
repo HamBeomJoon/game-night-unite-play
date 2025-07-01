@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Dice1, Search, Bell, User, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -12,10 +13,10 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2">
             <Dice1 className="w-8 h-8 text-orange-500" />
             <span className="text-xl font-bold text-gray-800">보드와 함께</span>
-          </div>
+          </Link>
 
           {/* Search Bar - Hidden on mobile */}
           <div className="hidden md:flex flex-1 max-w-md mx-8">
@@ -30,7 +31,7 @@ const Header = () => {
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">게임추천</a>
+            <Link to="/games" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">게임추천</Link>
             <a href="#" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">일행모집</a>
             <a href="#" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">카페찾기</a>
             <a href="#" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">중고거래</a>
@@ -72,7 +73,7 @@ const Header = () => {
                 />
               </div>
               <nav className="space-y-2">
-                <a href="#" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">게임추천</a>
+                <Link to="/games" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">게임추천</Link>
                 <a href="#" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">일행모집</a>
                 <a href="#" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">카페찾기</a>
                 <a href="#" className="block py-2 text-gray-700 hover:text-orange-600 font-medium">중고거래</a>

@@ -12,6 +12,8 @@ const CafeFinder = () => {
   const [selectedRegion, setSelectedRegion] = useState('all');
   const [selectedGame, setSelectedGame] = useState('all');
   const [filteredCafes, setFilteredCafes] = useState([]);
+  const [expandedCafe, setExpandedCafe] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState('인기 게임');
 
   // 샘플 카페 데이터 (보유 게임 정보 추가)
   const cafes = [
@@ -26,7 +28,14 @@ const CafeFinder = () => {
       gameCount: 300,
       image: '/placeholder.svg',
       features: ['주차가능', '단체룸', '음료무제한'],
-      availableGames: ['스플렌더', '티켓 투 라이드', '코드네임', '아줄', '윙스팬', '텔레스트레이션', '팬데믹']
+      availableGames: ['스플렌더', '티켓 투 라이드', '코드네임', '아줄', '윙스팬', '텔레스트레이션', '팬데믹'],
+      gameCategories: {
+        '인기 게임': ['스플렌더', '코드네임', '아줄'],
+        '전략 게임': ['티켓 투 라이드', '윙스팬', '도미니언'],
+        '파티 게임': ['텔레스트레이션', '코드네임'],
+        '협력 게임': ['팬데믹', '포비든 아일랜드']
+      },
+      popularGames: ['스플렌더', '코드네임', '아줄', '티켓 투 라이드']
     },
     {
       id: 2,
@@ -39,7 +48,13 @@ const CafeFinder = () => {
       gameCount: 250,
       image: '/placeholder.svg',
       features: ['24시간', '커플석', '생맥주'],
-      availableGames: ['스플렌더', '코드네임', '윙스팬', '텔레스트레이션', '도미니언']
+      availableGames: ['스플렌더', '코드네임', '윙스팬', '텔레스트레이션', '도미니언'],
+      gameCategories: {
+        '인기 게임': ['스플렌더', '코드네임'],
+        '전략 게임': ['윙스팬', '도미니언'],
+        '파티 게임': ['텔레스트레이션', '코드네임']
+      },
+      popularGames: ['스플렌더', '코드네임', '윙스팬']
     },
     {
       id: 3,
@@ -52,7 +67,13 @@ const CafeFinder = () => {
       gameCount: 400,
       image: '/placeholder.svg',
       features: ['오션뷰', '프리미엄룸', '디저트'],
-      availableGames: ['스플렌더', '티켓 투 라이드', '코드네임', '아줄', '윙스팬', '팬데믹', '도미니언']
+      availableGames: ['스플렌더', '티켓 투 라이드', '코드네임', '아줄', '윙스팬', '팬데믹', '도미니언'],
+      gameCategories: {
+        '인기 게임': ['스플렌더', '코드네임', '아줄'],
+        '전략 게임': ['티켓 투 라이드', '윙스팬', '도미니언'],
+        '협력 게임': ['팬데믹', '포비든 아일랜드']
+      },
+      popularGames: ['스플렌더', '코드네임', '아줄', '티켓 투 라이드', '윙스팬']
     },
     {
       id: 4,
@@ -65,7 +86,13 @@ const CafeFinder = () => {
       gameCount: 180,
       image: '/placeholder.svg',
       features: ['가족친화', '키즈존', '주차무료'],
-      availableGames: ['티켓 투 라이드', '코드네임', '텔레스트레이션']
+      availableGames: ['티켓 투 라이드', '코드네임', '텔레스트레이션'],
+      gameCategories: {
+        '인기 게임': ['코드네임', '텔레스트레이션'],
+        '전략 게임': ['티켓 투 라이드'],
+        '파티 게임': ['코드네임', '텔레스트레이션']
+      },
+      popularGames: ['코드네임', '텔레스트레이션', '티켓 투 라이드']
     },
     {
       id: 5,
@@ -78,7 +105,13 @@ const CafeFinder = () => {
       gameCount: 220,
       image: '/placeholder.svg',
       features: ['전통찻집', '조용한분위기', '와이파이'],
-      availableGames: ['스플렌더', '아줄', '윙스팬', '팬데믹', '도미니언']
+      availableGames: ['스플렌더', '아줄', '윙스팬', '팬데믹', '도미니언'],
+      gameCategories: {
+        '인기 게임': ['스플렌더', '아줄'],
+        '전략 게임': ['윙스팬', '도미니언'],
+        '협력 게임': ['팬데믹']
+      },
+      popularGames: ['스플렌더', '아줄', '윙스팬']
     },
     {
       id: 6,
@@ -91,7 +124,14 @@ const CafeFinder = () => {
       gameCount: 350,
       image: '/placeholder.svg',
       features: ['넓은공간', '토너먼트', '이벤트'],
-      availableGames: ['스플렌더', '티켓 투 라이드', '코드네임', '아줄', '텔레스트레이션', '팬데믹']
+      availableGames: ['스플렌더', '티켓 투 라이드', '코드네임', '아줄', '텔레스트레이션', '팬데믹'],
+      gameCategories: {
+        '인기 게임': ['스플렌더', '코드네임', '아줄'],
+        '전략 게임': ['티켓 투 라이드'],
+        '파티 게임': ['코드네임', '텔레스트레이션'],
+        '협력 게임': ['팬데믹']
+      },
+      popularGames: ['스플렌더', '코드네임', '아줄', '티켓 투 라이드']
     }
   ];
 
@@ -243,26 +283,85 @@ const CafeFinder = () => {
                 
                 {/* 보유 게임 목록 */}
                 <div className="pt-2">
-                  <p className="text-sm font-medium text-gray-700 mb-2">보유 게임</p>
-                  <div className="flex flex-wrap gap-1">
-                    {cafe.availableGames.slice(0, 4).map((game, index) => (
-                      <span 
-                        key={index}
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          selectedGame === game 
-                            ? 'bg-orange-200 text-orange-800 font-semibold' 
-                            : 'bg-blue-100 text-blue-700'
-                        }`}
-                      >
-                        {game}
-                      </span>
-                    ))}
-                    {cafe.availableGames.length > 4 && (
-                      <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                        +{cafe.availableGames.length - 4}개
-                      </span>
-                    )}
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-gray-700">보유 게임</p>
+                    <span className="text-xs text-gray-500">총 {cafe.gameCount}개</span>
                   </div>
+                  
+                  {/* 인기 게임 표시 */}
+                  <div className="mb-2">
+                    <p className="text-xs text-gray-500 mb-1">인기 게임</p>
+                    <div className="flex flex-wrap gap-1">
+                      {cafe.popularGames?.slice(0, 3).map((game, index) => (
+                        <span 
+                          key={index}
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            selectedGame === game 
+                              ? 'bg-orange-200 text-orange-800 font-semibold' 
+                              : 'bg-blue-100 text-blue-700'
+                          }`}
+                        >
+                          {game}
+                        </span>
+                      ))}
+                      {cafe.popularGames && cafe.popularGames.length > 3 && (
+                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                          +{cafe.popularGames.length - 3}개
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 게임 카테고리 선택 (확장된 경우) */}
+                  {expandedCafe === cafe.id && cafe.gameCategories && (
+                    <div className="mb-3">
+                      <div className="flex gap-1 mb-2 overflow-x-auto">
+                        {Object.keys(cafe.gameCategories).map((category) => (
+                          <button
+                            key={category}
+                            onClick={() => setSelectedCategory(category)}
+                            className={`px-2 py-1 text-xs rounded-full whitespace-nowrap ${
+                              selectedCategory === category
+                                ? 'bg-orange-200 text-orange-800 font-semibold'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            {category}
+                          </button>
+                        ))}
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-1">
+                        {cafe.gameCategories[selectedCategory]?.slice(0, 6).map((game, index) => (
+                          <span 
+                            key={index}
+                            className={`px-2 py-1 text-xs rounded-full ${
+                              selectedGame === game 
+                                ? 'bg-orange-200 text-orange-800 font-semibold' 
+                                : 'bg-green-100 text-green-700'
+                            }`}
+                          >
+                            {game}
+                          </span>
+                        ))}
+                        {cafe.gameCategories[selectedCategory] && cafe.gameCategories[selectedCategory].length > 6 && (
+                          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                            +{cafe.gameCategories[selectedCategory].length - 6}개
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 더보기/접기 버튼 */}
+                  {cafe.gameCategories && (
+                    <button
+                      onClick={() => setExpandedCafe(expandedCafe === cafe.id ? null : cafe.id)}
+                      className="text-xs text-orange-600 hover:text-orange-700 font-medium"
+                    >
+                      {expandedCafe === cafe.id ? '접기' : '게임 카테고리 보기'}
+                    </button>
+                  )}
                 </div>
 
                 <div className="flex flex-wrap gap-1 mt-3">
@@ -297,6 +396,8 @@ const CafeFinder = () => {
                 setSearchTerm('');
                 setSelectedRegion('all');
                 setSelectedGame('all');
+                setExpandedCafe(null);
+                setSelectedCategory('인기 게임');
               }}
               variant="outline"
             >

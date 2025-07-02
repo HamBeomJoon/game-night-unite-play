@@ -3,30 +3,41 @@ import React from 'react';
 import { Dice1, Users, MapPin, ShoppingCart, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   const features = [
     {
       icon: Dice1,
       title: "맞춤 게임 추천",
-      description: "취향과 인원에 맞는 완벽한 게임을 찾아보세요"
+      description: "취향과 인원에 맞는 완벽한 게임을 찾아보세요",
+      path: "/games"
     },
     {
       icon: Users,
       title: "일행 모집",
-      description: "함께 게임할 사람들을 쉽게 만나보세요"
+      description: "함께 게임할 사람들을 쉽게 만나보세요",
+      path: "/party"
     },
     {
       icon: MapPin,
       title: "카페 찾기",
-      description: "원하는 게임이 있는 근처 카페를 찾아보세요"
+      description: "원하는 게임이 있는 근처 카페를 찾아보세요",
+      path: "/cafes"
     },
     {
       icon: ShoppingCart,
       title: "안전한 거래",
-      description: "중고 보드게임을 믿고 거래하세요"
+      description: "중고 보드게임을 믿고 거래하세요",
+      path: "/trade"
     }
   ];
+
+  const handleFeatureClick = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <section className="relative py-20 px-4 overflow-hidden">
@@ -51,10 +62,6 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-              지금 시작하기
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
             <Button variant="outline" size="lg" className="border-orange-300 text-orange-600 hover:bg-orange-50 px-8 py-4 text-lg font-semibold">
               서비스 둘러보기
             </Button>
@@ -64,7 +71,11 @@ const Hero = () => {
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <Card key={index} className="bg-white/80 backdrop-blur-sm border-orange-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <Card 
+              key={index} 
+              className="bg-white/80 backdrop-blur-sm border-orange-100 hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+              onClick={() => handleFeatureClick(feature.path)}
+            >
               <CardContent className="p-6 text-center">
                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <feature.icon className="w-8 h-8 text-orange-500" />

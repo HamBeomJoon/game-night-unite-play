@@ -4,6 +4,7 @@ import { Users, DollarSign, Star, MapPin, Clock, Tag } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface CommunityPostProps {
   post: {
@@ -22,6 +23,30 @@ interface CommunityPostProps {
 }
 
 const CommunityPost: React.FC<CommunityPostProps> = ({ post }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    // 포스트 타입에 따라 다른 페이지로 이동
+    switch (post.type) {
+      case '모집':
+        navigate('/party');
+        break;
+      case '거래':
+        navigate('/trade');
+        break;
+      case '후기':
+        navigate('/games');
+        break;
+      default:
+        navigate('/party');
+    }
+  };
+
+  const handleActionClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 카드 클릭 이벤트와 충돌 방지
+    handleCardClick();
+  };
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case '모집': return 'bg-blue-100 text-blue-800';
@@ -43,7 +68,10 @@ const CommunityPost: React.FC<CommunityPostProps> = ({ post }) => {
   const TypeIcon = getTypeIcon(post.type);
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 border-orange-100 bg-white">
+    <Card 
+      className="hover:shadow-lg transition-all duration-300 border-orange-100 bg-white cursor-pointer"
+      onClick={handleCardClick}
+    >
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Badge className={getTypeColor(post.type)}>
@@ -108,6 +136,7 @@ const CommunityPost: React.FC<CommunityPostProps> = ({ post }) => {
         <Button 
           size="sm" 
           className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+          onClick={handleActionClick}
         >
           {post.type === '모집' ? '참여하기' : post.type === '거래' ? '연락하기' : '자세히 보기'}
         </Button>

@@ -23,12 +23,20 @@ interface GameCardProps {
 const GameCard: React.FC<GameCardProps> = ({ game }) => {
   const navigate = useNavigate();
 
-  const handleViewDetails = () => {
+  const handleCardClick = () => {
+    navigate(`/games/${game.id}`);
+  };
+
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 카드 클릭 이벤트와 충돌 방지
     navigate(`/games/${game.id}`);
   };
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 border-orange-100 bg-white/90">
+    <Card 
+      className="hover:shadow-lg transition-all duration-300 border-orange-100 bg-white/90 cursor-pointer"
+      onClick={handleCardClick}
+    >
       <CardContent className="p-0">
         <img 
           src={game.image} 

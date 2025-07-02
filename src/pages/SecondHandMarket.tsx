@@ -284,9 +284,9 @@ function SecondHandMarket() {
                           </div>
                         </div>
 
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{item.description}</p>
+                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{item.description}</p>
 
-                        <div className="mb-3">
+                        <div className="mb-4">
                           <UserRating user={item.seller} showDetails={false} />
                         </div>
 

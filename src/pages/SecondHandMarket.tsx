@@ -5,6 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "@/components/Header";
+import UserRating from "@/components/UserRating";
+import { UserProfile } from "@/types/user";
 
 const priceRanges = [
   { label: "1만원 이하", value: "under1" },
@@ -21,6 +23,40 @@ function SecondHandMarket() {
   const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState("전체");
 
+  // 샘플 사용자 데이터
+  const sampleUsers: UserProfile[] = [
+    {
+      id: "1",
+      username: "김지훈",
+      rating: 4.8,
+      totalReviews: 23,
+      completedTrades: 15,
+      completedParties: 8,
+      joinedDate: "2024-01-15",
+      badges: ["신뢰거래자", "친절한판매자"]
+    },
+    {
+      id: "2", 
+      username: "박예진",
+      rating: 4.6,
+      totalReviews: 12,
+      completedTrades: 8,
+      completedParties: 15,
+      joinedDate: "2024-03-20",
+      badges: ["모임왕"]
+    },
+    {
+      id: "3",
+      username: "이진서", 
+      rating: 4.9,
+      totalReviews: 35,
+      completedTrades: 25,
+      completedParties: 12,
+      joinedDate: "2023-11-10",
+      badges: ["베테랑거래자", "룰마스터"]
+    }
+  ];
+
   const items = [
     {
       id: 1,
@@ -28,7 +64,7 @@ function SecondHandMarket() {
       condition: "상급",
       price: 35000,
       originalPrice: 45000,
-      seller: "김지훈",
+      seller: sampleUsers[0],
       location: "강남구",
       postedDate: "2일 전",
       images: ["/placeholder.svg?height=200&width=200"],
@@ -42,7 +78,7 @@ function SecondHandMarket() {
       condition: "중급",
       price: 28000,
       originalPrice: 40000,
-      seller: "박예진",
+      seller: sampleUsers[1],
       location: "마포구",
       postedDate: "1주 전",
       images: ["/placeholder.svg?height=200&width=200"],
@@ -56,7 +92,7 @@ function SecondHandMarket() {
       condition: "상급",
       price: 55000,
       originalPrice: 70000,
-      seller: "이진서",
+      seller: sampleUsers[2],
       location: "송파구",
       postedDate: "3일 전",
       images: ["/placeholder.svg?height=200&width=200"],
@@ -183,6 +219,13 @@ function SecondHandMarket() {
                 <div className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
                   <div>
+                    <div className="font-medium text-gray-800">평점 확인</div>
+                    <div className="text-gray-600">판매자의 평점과 후기를 확인하세요</div>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                  <div>
                     <div className="font-medium text-gray-800">직거래 권장</div>
                     <div className="text-gray-600">안전한 공공장소에서 만나세요</div>
                   </div>
@@ -192,13 +235,6 @@ function SecondHandMarket() {
                   <div>
                     <div className="font-medium text-gray-800">구성품 확인</div>
                     <div className="text-gray-600">거래 전 구성품을 꼼꼼히 확인하세요</div>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                  <div>
-                    <div className="font-medium text-gray-800">사기 주의</div>
-                    <div className="text-gray-600">선입금 요구 시 신중하게 판단하세요</div>
                   </div>
                 </div>
               </CardContent>
@@ -235,10 +271,12 @@ function SecondHandMarket() {
 
                         <p className="text-sm text-gray-600 mb-3 line-clamp-2">{item.description}</p>
 
+                        <div className="mb-3">
+                          <UserRating user={item.seller} showDetails={false} />
+                        </div>
+
                         <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
-                          <div>
-                            {item.seller} · {item.location}
-                          </div>
+                          <div>{item.location}</div>
                           <div>{item.postedDate}</div>
                         </div>
 
@@ -270,4 +308,4 @@ function SecondHandMarket() {
   );
 }
 
-export default SecondHandMarket; 
+export default SecondHandMarket;

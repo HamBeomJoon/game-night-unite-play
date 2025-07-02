@@ -10,6 +10,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
+import UserRating from '@/components/UserRating';
+import { UserProfile } from '@/types/user';
 
 const PartyRecruitment = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,6 +30,40 @@ const PartyRecruitment = () => {
     isRuleMasterIncluded: false
   });
 
+  // 샘플 사용자 데이터
+  const sampleUsers: UserProfile[] = [
+    {
+      id: "1",
+      username: "게임러버",
+      rating: 4.8,
+      totalReviews: 23,
+      completedTrades: 5,
+      completedParties: 18,
+      joinedDate: "2024-01-15",
+      badges: ["룰마스터", "친근한호스트"]
+    },
+    {
+      id: "2", 
+      username: "파티왕",
+      rating: 4.6,
+      totalReviews: 15,
+      completedTrades: 2,
+      completedParties: 25,
+      joinedDate: "2024-03-20",
+      badges: ["모임왕", "분위기메이커"]
+    },
+    {
+      id: "3",
+      username: "농부왕", 
+      rating: 4.9,
+      totalReviews: 31,
+      completedTrades: 12,
+      completedParties: 22,
+      joinedDate: "2023-11-10",
+      badges: ["전략왕", "룰마스터"]
+    }
+  ];
+
   // 샘플 모임 데이터
   const partyData = [
     {
@@ -41,7 +77,7 @@ const PartyRecruitment = () => {
       currentParticipants: 2,
       maxParticipants: 4,
       isRuleMasterIncluded: true,
-      organizer: '게임러버',
+      organizer: sampleUsers[0],
       tags: ['초보환영', '룰마스터', '전략게임']
     },
     {
@@ -55,7 +91,7 @@ const PartyRecruitment = () => {
       currentParticipants: 1,
       maxParticipants: 6,
       isRuleMasterIncluded: false,
-      organizer: '파티왕',
+      organizer: sampleUsers[1],
       tags: ['파티게임', '웃음', '스트레스해소']
     },
     {
@@ -69,7 +105,7 @@ const PartyRecruitment = () => {
       currentParticipants: 3,
       maxParticipants: 4,
       isRuleMasterIncluded: false,
-      organizer: '농부왕',
+      organizer: sampleUsers[2],
       tags: ['고수만', '전략게임', '고난도']
     }
   ];
@@ -264,7 +300,7 @@ const PartyRecruitment = () => {
           </div>
         </div>
 
-        {/* 모임 리스트 */}
+        {/* 모임 리스트 - 사용자 평점 추가 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredParties.map((party) => (
             <Card key={party.id} className="hover:shadow-lg transition-all duration-300 border-orange-100">
@@ -273,9 +309,6 @@ const PartyRecruitment = () => {
                   <Badge className="bg-blue-100 text-blue-800">
                     {party.gameType}
                   </Badge>
-                  <span className="text-xs text-gray-500">
-                    {party.organizer}
-                  </span>
                 </div>
                 
                 <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
@@ -285,6 +318,10 @@ const PartyRecruitment = () => {
                 <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                   {party.description}
                 </p>
+                
+                <div className="mb-4">
+                  <UserRating user={party.organizer} showDetails={false} />
+                </div>
                 
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center gap-2 text-sm text-gray-600">

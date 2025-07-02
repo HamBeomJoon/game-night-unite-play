@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import GameRecommendation from "./pages/GameRecommendation";
+import GameDetail from "./pages/GameDetail";
 import PartyRecruitment from "./pages/PartyRecruitment";
 import CafeFinder from "./pages/CafeFinder";
 import NotFound from "./pages/NotFound";
@@ -25,6 +27,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/games" element={<GameRecommendation />} />
+            <Route path="/games/:gameId" element={<GameDetail />} />
             <Route path="/party" element={<PartyRecruitment />} />
             <Route path="/cafes" element={<CafeFinder />} />
             <Route path="/trade" element={<SecondHandMarket />} />

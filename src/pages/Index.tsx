@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dice1, Users, MapPin, ShoppingCart, Star, BookOpen, Coffee, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,8 @@ const Index = () => {
       time: "30분",
       difficulty: "보통",
       image: "/placeholder.svg",
-      description: "보석 상인이 되어 부를 쌓아가는 전략 게임"
+      description: "보석 상인이 되어 부를 쌓아가는 전략 게임",
+      category: "전략게임"
     },
     {
       id: 2,
@@ -30,7 +30,8 @@ const Index = () => {
       time: "60분",
       difficulty: "쉬움",
       image: "/placeholder.svg",
-      description: "기차 노선을 연결하는 재미있는 전략 게임"
+      description: "기차 노선을 연결하는 재미있는 전략 게임",
+      category: "전략게임"
     },
     {
       id: 3,
@@ -40,7 +41,8 @@ const Index = () => {
       time: "15분",
       difficulty: "쉬움",
       image: "/placeholder.svg",
-      description: "단서로 소통하는 팀 협력 추리 게임"
+      description: "단서로 소통하는 팀 협력 추리 게임",
+      category: "추리게임"
     },
     {
       id: 4,
@@ -50,7 +52,8 @@ const Index = () => {
       time: "45분",
       difficulty: "보통",
       image: "/placeholder.svg",
-      description: "아름다운 타일로 궁전을 꾸미는 퍼즐 게임"
+      description: "아름다운 타일로 궁전을 꾸미는 퍼즐 게임",
+      category: "퍼즐게임"
     }
   ];
 

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search, MapPin, Clock, Phone, Star, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,9 +10,10 @@ import Header from '@/components/Header';
 const CafeFinder = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('all');
+  const [selectedGame, setSelectedGame] = useState('all');
   const [filteredCafes, setFilteredCafes] = useState([]);
 
-  // 샘플 카페 데이터
+  // 샘플 카페 데이터 (보유 게임 정보 추가)
   const cafes = [
     {
       id: 1,
@@ -23,7 +25,8 @@ const CafeFinder = () => {
       rating: 4.5,
       gameCount: 300,
       image: '/placeholder.svg',
-      features: ['주차가능', '단체룸', '음료무제한']
+      features: ['주차가능', '단체룸', '음료무제한'],
+      availableGames: ['스플렌더', '티켓 투 라이드', '코드네임', '아줄', '윙스팬', '텔레스트레이션', '팬데믹']
     },
     {
       id: 2,
@@ -35,7 +38,8 @@ const CafeFinder = () => {
       rating: 4.3,
       gameCount: 250,
       image: '/placeholder.svg',
-      features: ['24시간', '커플석', '생맥주']
+      features: ['24시간', '커플석', '생맥주'],
+      availableGames: ['스플렌더', '코드네임', '윙스팬', '텔레스트레이션', '도미니언']
     },
     {
       id: 3,
@@ -47,7 +51,8 @@ const CafeFinder = () => {
       rating: 4.7,
       gameCount: 400,
       image: '/placeholder.svg',
-      features: ['오션뷰', '프리미엄룸', '디저트']
+      features: ['오션뷰', '프리미엄룸', '디저트'],
+      availableGames: ['스플렌더', '티켓 투 라이드', '코드네임', '아줄', '윙스팬', '팬데믹', '도미니언']
     },
     {
       id: 4,
@@ -59,7 +64,8 @@ const CafeFinder = () => {
       rating: 4.2,
       gameCount: 180,
       image: '/placeholder.svg',
-      features: ['가족친화', '키즈존', '주차무료']
+      features: ['가족친화', '키즈존', '주차무료'],
+      availableGames: ['티켓 투 라이드', '코드네임', '텔레스트레이션']
     },
     {
       id: 5,
@@ -71,7 +77,8 @@ const CafeFinder = () => {
       rating: 4.4,
       gameCount: 220,
       image: '/placeholder.svg',
-      features: ['전통찻집', '조용한분위기', '와이파이']
+      features: ['전통찻집', '조용한분위기', '와이파이'],
+      availableGames: ['스플렌더', '아줄', '윙스팬', '팬데믹', '도미니언']
     },
     {
       id: 6,
@@ -83,7 +90,8 @@ const CafeFinder = () => {
       rating: 4.6,
       gameCount: 350,
       image: '/placeholder.svg',
-      features: ['넓은공간', '토너먼트', '이벤트']
+      features: ['넓은공간', '토너먼트', '이벤트'],
+      availableGames: ['스플렌더', '티켓 투 라이드', '코드네임', '아줄', '텔레스트레이션', '팬데믹']
     }
   ];
 
@@ -97,6 +105,18 @@ const CafeFinder = () => {
     { value: 'gwangju', label: '광주' }
   ];
 
+  const games = [
+    { value: 'all', label: '전체 게임' },
+    { value: '스플렌더', label: '스플렌더' },
+    { value: '티켓 투 라이드', label: '티켓 투 라이드' },
+    { value: '코드네임', label: '코드네임' },
+    { value: '아줄', label: '아줄' },
+    { value: '윙스팬', label: '윙스팬' },
+    { value: '텔레스트레이션', label: '텔레스트레이션' },
+    { value: '팬데믹', label: '팬데믹' },
+    { value: '도미니언', label: '도미니언' }
+  ];
+
   // 검색 및 필터링 로직
   React.useEffect(() => {
     let filtered = cafes;
@@ -104,7 +124,8 @@ const CafeFinder = () => {
     if (searchTerm) {
       filtered = filtered.filter(cafe => 
         cafe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cafe.address.toLowerCase().includes(searchTerm.toLowerCase())
+        cafe.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cafe.availableGames.some(game => game.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
@@ -112,8 +133,12 @@ const CafeFinder = () => {
       filtered = filtered.filter(cafe => cafe.region === selectedRegion);
     }
 
+    if (selectedGame !== 'all') {
+      filtered = filtered.filter(cafe => cafe.availableGames.includes(selectedGame));
+    }
+
     setFilteredCafes(filtered);
-  }, [searchTerm, selectedRegion]);
+  }, [searchTerm, selectedRegion, selectedGame]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
@@ -133,7 +158,7 @@ const CafeFinder = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  placeholder="카페명, 지역으로 검색..."
+                  placeholder="카페명, 지역, 게임명으로 검색..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -154,6 +179,20 @@ const CafeFinder = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div className="md:w-48">
+              <Select value={selectedGame} onValueChange={setSelectedGame}>
+                <SelectTrigger>
+                  <SelectValue placeholder="게임 선택" />
+                </SelectTrigger>
+                <SelectContent>
+                  {games.map(game => (
+                    <SelectItem key={game.value} value={game.value}>
+                      {game.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <Button className="bg-orange-500 hover:bg-orange-600">
               <Filter className="w-4 h-4 mr-2" />
               검색
@@ -165,6 +204,11 @@ const CafeFinder = () => {
         <div className="mb-4">
           <p className="text-gray-600">
             총 <span className="font-semibold text-orange-600">{filteredCafes.length}</span>개의 카페를 찾았습니다
+            {selectedGame !== 'all' && (
+              <span className="ml-2 text-orange-600">
+                ({selectedGame} 보유 카페)
+              </span>
+            )}
           </p>
         </div>
 
@@ -196,6 +240,31 @@ const CafeFinder = () => {
                   <Clock className="w-4 h-4 text-gray-400" />
                   <span className="text-sm text-gray-600">{cafe.hours}</span>
                 </div>
+                
+                {/* 보유 게임 목록 */}
+                <div className="pt-2">
+                  <p className="text-sm font-medium text-gray-700 mb-2">보유 게임</p>
+                  <div className="flex flex-wrap gap-1">
+                    {cafe.availableGames.slice(0, 4).map((game, index) => (
+                      <span 
+                        key={index}
+                        className={`px-2 py-1 text-xs rounded-full ${
+                          selectedGame === game 
+                            ? 'bg-orange-200 text-orange-800 font-semibold' 
+                            : 'bg-blue-100 text-blue-700'
+                        }`}
+                      >
+                        {game}
+                      </span>
+                    ))}
+                    {cafe.availableGames.length > 4 && (
+                      <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                        +{cafe.availableGames.length - 4}개
+                      </span>
+                    )}
+                  </div>
+                </div>
+
                 <div className="flex flex-wrap gap-1 mt-3">
                   {cafe.features.map((feature, index) => (
                     <span 
@@ -227,6 +296,7 @@ const CafeFinder = () => {
               onClick={() => {
                 setSearchTerm('');
                 setSelectedRegion('all');
+                setSelectedGame('all');
               }}
               variant="outline"
             >

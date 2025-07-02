@@ -11,10 +11,12 @@ const GameRecommendation = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [selectedDifficulty, setSelectedDifficulty] = useState('전체');
+  const [selectedPlayerCount, setSelectedPlayerCount] = useState('전체');
   const [popularType, setPopularType] = useState<'rating' | 'review' | 'players'>('rating');
 
   const categories = ['전체', '전략', '파티', '협력', '추리', '덱빌딩', '워커플레이스먼트'];
   const difficulties = ['전체', '쉬움', '보통', '어려움'];
+  const playerCounts = ['전체', '2명', '3명', '4명', '5명', '6명+'];
 
   const allGames = [
     {
@@ -107,7 +109,6 @@ const GameRecommendation = () => {
     }
   ];
 
-  // 샘플 후기/평점/플레이 인원 데이터 (실제 데이터라면 서버에서 받아와야 함)
   const gameReviews = {
     '스플렌더': 12,
     '티켓 투 라이드': 8,
@@ -119,7 +120,33 @@ const GameRecommendation = () => {
     '도미니언': 5,
   };
 
-  // 인기 게임 정렬
+  // 인원수 필터링 로직
+  const matchesPlayerCount = (game, playerCount) => {
+    if (playerCount === '전체') return true;
+    
+    // 플레이어 수 문자열에서 숫자 추출
+    const playerNumbers = game.players.match(/\d+/g);
+    if (!playerNumbers) return false;
+    
+    const minPlayers = parseInt(playerNumbers[0]);
+    const maxPlayers = playerNumbers.length > 1 ? parseInt(playerNumbers[1]) : minPlayers;
+    
+    switch (playerCount) {
+      case '2명':
+        return minPlayers <= 2 && maxPlayers >= 2;
+      case '3명':
+        return minPlayers <= 3 && maxPlayers >= 3;
+      case '4명':
+        return minPlayers <= 4 && maxPlayers >= 4;
+      case '5명':
+        return minPlayers <= 5 && maxPlayers >= 5;
+      case '6명+':
+        return maxPlayers >= 6;
+      default:
+        return true;
+    }
+  };
+
   let popularGames = [...allGames];
   if (popularType === 'rating') {
     popularGames.sort((a, b) => b.rating - a.rating);
@@ -141,15 +168,15 @@ const GameRecommendation = () => {
                          game.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === '전체' || game.category === selectedCategory;
     const matchesDifficulty = selectedDifficulty === '전체' || game.difficulty === selectedDifficulty;
+    const matchesPlayers = matchesPlayerCount(game, selectedPlayerCount);
     
-    return matchesSearch && matchesCategory && matchesDifficulty;
+    return matchesSearch && matchesCategory && matchesDifficulty && matchesPlayers;
   });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
       <Header />
       
-      {/* 인기 게임 리스트 섹션 */}
       <section className="py-8 px-4 max-w-4xl mx-auto">
         <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <h2 className="text-2xl font-bold text-gray-800">인기 게임 Top 5</h2>
@@ -186,7 +213,6 @@ const GameRecommendation = () => {
         </div>
       </section>
 
-      {/* Hero Section */}
       <section className="py-12 px-4 bg-white/50">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
@@ -201,7 +227,7 @@ const GameRecommendation = () => {
       {/* Search and Filter Section */}
       <section className="py-8 px-4 max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm border border-orange-100 p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {/* Search */}
             <div className="relative md:col-span-2">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -238,10 +264,22 @@ const GameRecommendation = () => {
                 ))}
               </select>
             </div>
+
+            {/* Player Count Filter */}
+            <div>
+              <select 
+                value={selectedPlayerCount} 
+                onChange={(e) => setSelectedPlayerCount(e.target.value)}
+                className="w-full px-3 py-2 border border-orange-200 rounded-md focus:border-orange-400 focus:outline-none"
+              >
+                {playerCounts.map(count => (
+                  <option key={count} value={count}>{count}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card className="text-center border-orange-100">
             <CardContent className="p-4">
@@ -284,7 +322,6 @@ const GameRecommendation = () => {
         )}
       </section>
 
-      {/* Recommendation Categories */}
       <section className="py-16 px-4 max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
           상황별 게임 추천

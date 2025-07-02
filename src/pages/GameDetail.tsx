@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users, Clock, Star, PlayCircle, BookOpen } from 'lucide-react';
@@ -7,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
+import RatingForm from '@/components/RatingForm';
 
 const GameDetail = () => {
   const { gameId } = useParams();
@@ -56,6 +56,13 @@ const GameDetail = () => {
       "상대방이 원하는 카드를 예약하여 방해할 수도 있습니다"
     ],
     videoUrl: "https://www.youtube.com/watch?v=example"
+  };
+
+  const handleGameRating = (rating: number, comment: string) => {
+    // 실제로는 API 호출을 통해 서버에 평점을 저장해야 함
+    console.log('게임 평점 제출:', { gameId, rating, comment });
+    // 성공 메시지 표시 (toast 등)
+    alert(`평점 ${rating}점이 성공적으로 제출되었습니다!`);
   };
 
   return (
@@ -127,11 +134,12 @@ const GameDetail = () => {
         </div>
 
         <Tabs defaultValue="rules" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="rules">게임 방법</TabsTrigger>
             <TabsTrigger value="components">구성품</TabsTrigger>
             <TabsTrigger value="tips">팁 & 전략</TabsTrigger>
             <TabsTrigger value="info">게임 정보</TabsTrigger>
+            <TabsTrigger value="rating">평점 남기기</TabsTrigger>
           </TabsList>
           
           <TabsContent value="rules" className="space-y-4">
@@ -212,6 +220,15 @@ const GameDetail = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+          
+          <TabsContent value="rating">
+            <RatingForm
+              type="game"
+              targetId={gameId || '1'}
+              targetName={gameData.title}
+              onSubmit={handleGameRating}
+            />
           </TabsContent>
         </Tabs>
       </div>

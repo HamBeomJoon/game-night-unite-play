@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Star, User, ShoppingBag, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { UserProfile } from '@/types/user';
@@ -10,13 +11,24 @@ interface UserRatingProps {
 }
 
 const UserRating: React.FC<UserRatingProps> = ({ user, showDetails = false }) => {
+  const navigate = useNavigate();
+
+  const handleUserClick = () => {
+    navigate(`/users/${user.id}`);
+  };
+
   return (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-1">
         <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
           <User className="w-3 h-3 text-orange-600" />
         </div>
-        <span className="font-medium text-sm">{user.username}</span>
+        <span 
+          className="font-medium text-sm hover:text-orange-600 cursor-pointer transition-colors"
+          onClick={handleUserClick}
+        >
+          {user.username}
+        </span>
       </div>
       
       <div className="flex items-center gap-1">

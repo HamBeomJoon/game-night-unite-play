@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,7 @@ import SecondHandMarket from "./pages/SecondHandMarket";
 import Alarm from "./pages/Alarm";
 import MyPage from "./pages/MyPage";
 import Login from "./pages/Login";
+import UserProfile from "./pages/UserProfile";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +34,7 @@ function App() {
             <Route path="/alarm" element={<Alarm />} />
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/users/:userId" element={<UserProfile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

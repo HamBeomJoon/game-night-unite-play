@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "@/components/Header";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 const notifications = [
   {
@@ -17,22 +19,36 @@ const notifications = [
 ];
 
 const Alarm: React.FC = () => {
+  const [notificationsList, setNotificationsList] = useState(notifications);
+
+  const handleDeleteNotification = (id: number) => {
+    setNotificationsList(prev => prev.filter(notification => notification.id !== id));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
       <Header />
       <div className="max-w-xl mx-auto py-12 px-4">
         <h1 className="text-2xl font-bold mb-6 text-gray-800 text-center">알림</h1>
         <div className="space-y-4">
-          {notifications.length === 0 ? (
+          {notificationsList.length === 0 ? (
             <div className="text-gray-400 text-center py-16">알림이 없습니다.</div>
           ) : (
-            notifications.map((n) => (
+            notificationsList.map((n) => (
               <div key={n.id} className="bg-white/90 rounded-xl shadow flex items-center gap-4 border-l-4 border-orange-400 p-5 hover:shadow-lg transition-all">
                 <div className="font-semibold text-orange-500 w-20 text-center">{n.type}</div>
                 <div className="flex-1">
                   <div className="text-gray-800 font-medium">{n.message}</div>
                   <div className="text-xs text-gray-400 mt-1">{n.time}</div>
                 </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDeleteNotification(n.id)}
+                  className="text-gray-400 hover:text-red-500 hover:bg-red-50"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
             ))
           )}

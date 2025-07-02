@@ -117,6 +117,13 @@ function SecondHandMarket() {
     setSelectedLocation(e.target.value);
   };
 
+  // 필터 초기화 핸들러
+  const handleResetFilters = () => {
+    setSelectedPrices([]);
+    setSelectedConditions([]);
+    setSelectedLocation("전체");
+  };
+
   // 필터링 로직
   const filteredItems = items.filter((item) => {
     // 가격대 필터
@@ -160,8 +167,16 @@ function SecondHandMarket() {
         <div className="grid lg:grid-cols-4 gap-8">
           <div className="lg:col-span-1">
             <Card className="border-orange-100 bg-white/90">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-orange-600">검색 필터</CardTitle>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleResetFilters}
+                  className="text-xs border-orange-200 text-orange-600 hover:bg-orange-50"
+                >
+                  초기화
+                </Button>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>

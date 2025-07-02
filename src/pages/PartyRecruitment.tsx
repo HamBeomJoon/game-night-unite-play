@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
-import { Plus, Users, MapPin, Clock, Calendar, Search, Filter } from 'lucide-react';
+import { Plus, Users, MapPin, Clock, Calendar, Search, Filter, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import UserRating from '@/components/UserRating';
+import PartyChat from '@/components/PartyChat';
 import { UserProfile } from '@/types/user';
+import { Party, ChatMessage, PartyChat as PartyChatType } from '@/types/party';
 
 const PartyRecruitment = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
+  const [selectedChatParty, setSelectedChatParty] = useState<Party | null>(null);
   
   // 모임 생성 폼 상태
   const [formData, setFormData] = useState({
@@ -65,7 +70,7 @@ const PartyRecruitment = () => {
   ];
 
   // 샘플 모임 데이터
-  const partyData = [
+  const partyData: Party[] = [
     {
       id: 1,
       title: '스플렌더 초보자 모임',
@@ -110,6 +115,29 @@ const PartyRecruitment = () => {
     }
   ];
 
+  // 채팅 메시지 상태
+  const [partyChats, setPartyChats] = useState<PartyChatType[]>([
+    {
+      partyId: 1,
+      messages: [
+        {
+          id: '1',
+          userId: '1',
+          username: '게임러버',
+          message: '안녕하세요! 스플렌더 모임에 오신 것을 환영합니다 😊',
+          timestamp: '2025-01-14T10:00:00Z'
+        },
+        {
+          id: '2',
+          userId: '2',
+          username: '초보게이머',
+          message: '안녕하세요! 스플렌더 처음인데 잘 부탁드립니다!',
+          timestamp: '2025-01-14T10:05:00Z'
+        }
+      ]
+    }
+  ]);
+
   const filteredParties = partyData.filter(party => {
     const matchesSearch = party.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          party.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -139,6 +167,34 @@ const PartyRecruitment = () => {
 
   const handleJoinParty = (partyId: number) => {
     toast.success('모임 참여 신청이 완료되었습니다!');
+  };
+
+  const handleSendMessage = (partyId: number, message: string) => {
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      userId: 'current-user',
+      username: '나',
+      message,
+      timestamp: new Date().toISOString()
+    };
+
+    setPartyChats(prev => {
+      const existingChat = prev.find(chat => chat.partyId === partyId);
+      if (existingChat) {
+        return prev.map(chat => 
+          chat.partyId === partyId 
+            ? { ...chat, messages: [...chat.messages, newMessage] }
+            : chat
+        );
+      } else {
+        return [...prev, { partyId, messages: [newMessage] }];
+      }
+    });
+  };
+
+  const getPartyChatMessages = (partyId: number): ChatMessage[] => {
+    const chat = partyChats.find(chat => chat.partyId === partyId);
+    return chat ? chat.messages : [];
   };
 
   return (
@@ -300,7 +356,7 @@ const PartyRecruitment = () => {
           </div>
         </div>
 
-        {/* 모임 리스트 - 사용자 평점 추가 */}
+        {/* 모임 리스트 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredParties.map((party) => (
             <Card key={party.id} className="hover:shadow-lg transition-all duration-300 border-orange-100">
@@ -352,13 +408,39 @@ const PartyRecruitment = () => {
                   ))}
                 </div>
                 
-                <Button 
-                  onClick={() => handleJoinParty(party.id)}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-                  disabled={party.currentParticipants >= party.maxParticipants}
-                >
-                  {party.currentParticipants >= party.maxParticipants ? '모집 완료' : '참여하기'}
-                </Button>
+                <div className="space-y-2">
+                  <Button 
+                    onClick={() => handleJoinParty(party.id)}
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                    disabled={party.currentParticipants >= party.maxParticipants}
+                  >
+                    {party.currentParticipants >= party.maxParticipants ? '모집 완료' : '참여하기'}
+                  </Button>
+                  
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => setSelectedChatParty(party)}
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        채팅방
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle>모임 채팅</DialogTitle>
+                      </DialogHeader>
+                      <PartyChat
+                        partyId={party.id}
+                        partyTitle={party.title}
+                        messages={getPartyChatMessages(party.id)}
+                        onSendMessage={handleSendMessage}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </CardContent>
             </Card>
           ))}

@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import UserRating from '@/components/UserRating';
@@ -20,6 +21,8 @@ import { Party, ChatMessage, PartyChat as PartyChatType } from '@/types/party';
 const PartyRecruitment = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [locationFilter, setLocationFilter] = useState('all');
+  const [userLocation, setUserLocation] = useState('');
   const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
   const [selectedChatParty, setSelectedChatParty] = useState<Party | null>(null);
   
@@ -69,7 +72,7 @@ const PartyRecruitment = () => {
     }
   ];
 
-  // 샘플 모임 데이터
+  // 지역별 모임 데이터 (거리 정보 포함)
   const partyData: Party[] = [
     {
       id: 1,
@@ -112,8 +115,46 @@ const PartyRecruitment = () => {
       isRuleMasterIncluded: false,
       organizer: sampleUsers[2],
       tags: ['고수만', '전략게임', '고난도']
+    },
+    {
+      id: 4,
+      title: '주말 보드게임 모임',
+      description: '편안한 주말 보드게임 시간',
+      gameType: '협력',
+      location: '잠실 보드게임카페',
+      date: '2025-01-18',
+      time: '14:00',
+      currentParticipants: 2,
+      maxParticipants: 5,
+      isRuleMasterIncluded: true,
+      organizer: sampleUsers[0],
+      tags: ['주말', '협력게임', '편안한분위기']
+    },
+    {
+      id: 5,
+      title: '추리게임 매니아 모임',
+      description: '셜록홈즈, 디셉션 등 추리게임 좋아하시는 분들',
+      gameType: '추리',
+      location: '건대 보드게임카페',
+      date: '2025-01-19',
+      time: '19:30',
+      currentParticipants: 1,
+      maxParticipants: 6,
+      isRuleMasterIncluded: false,
+      organizer: sampleUsers[1],
+      tags: ['추리게임', '매니아', '두뇌게임']
     }
   ];
+
+  // 위치별 지역 구분
+  const getLocationArea = (location: string) => {
+    if (location.includes('강남') || location.includes('역삼') || location.includes('선릉')) return '강남권';
+    if (location.includes('홍대') || location.includes('합정') || location.includes('상수')) return '홍대권';
+    if (location.includes('신촌') || location.includes('이대') || location.includes('연신내')) return '신촌권';
+    if (location.includes('잠실') || location.includes('송파') || location.includes('강동')) return '잠실권';
+    if (location.includes('건대') || location.includes('구의') || location.includes('광진')) return '건대권';
+    return '기타';
+  };
 
   // 채팅 메시지 상태
   const [partyChats, setPartyChats] = useState<PartyChatType[]>([
@@ -142,7 +183,8 @@ const PartyRecruitment = () => {
     const matchesSearch = party.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          party.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === 'all' || party.gameType === filterType;
-    return matchesSearch && matchesType;
+    const matchesLocation = locationFilter === 'all' || getLocationArea(party.location) === locationFilter;
+    return matchesSearch && matchesType && matchesLocation;
   });
 
   const handleCreateParty = () => {
@@ -195,6 +237,23 @@ const PartyRecruitment = () => {
   const getPartyChatMessages = (partyId: number): ChatMessage[] => {
     const chat = partyChats.find(chat => chat.partyId === partyId);
     return chat ? chat.messages : [];
+  };
+
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // 실제로는 좌표를 주소로 변환하는 API를 사용해야 함
+          setUserLocation('현재 위치');
+          toast.success('현재 위치를 가져왔습니다!');
+        },
+        (error) => {
+          toast.error('위치 정보를 가져올 수 없습니다.');
+        }
+      );
+    } else {
+      toast.error('위치 서비스를 지원하지 않는 브라우저입니다.');
+    }
   };
 
   return (
@@ -312,6 +371,27 @@ const PartyRecruitment = () => {
           </Drawer>
         </div>
 
+        {/* 현재 위치 설정 */}
+        <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border border-orange-100">
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <Label htmlFor="userLocation">내 위치 설정 (선택사항)</Label>
+              <div className="flex gap-2 mt-2">
+                <Input
+                  id="userLocation"
+                  value={userLocation}
+                  onChange={(e) => setUserLocation(e.target.value)}
+                  placeholder="예: 강남역, 홍대입구역"
+                />
+                <Button onClick={getCurrentLocation} variant="outline" size="sm">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  현재 위치
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* 검색 및 필터 */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="flex-1 relative">
@@ -325,6 +405,20 @@ const PartyRecruitment = () => {
           </div>
           
           <div className="flex gap-2">
+            <Select value={locationFilter} onValueChange={setLocationFilter}>
+              <SelectTrigger className="w-32">
+                <SelectValue placeholder="지역 선택" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                <SelectItem value="all">전체 지역</SelectItem>
+                <SelectItem value="강남권">강남권</SelectItem>
+                <SelectItem value="홍대권">홍대권</SelectItem>
+                <SelectItem value="신촌권">신촌권</SelectItem>
+                <SelectItem value="잠실권">잠실권</SelectItem>
+                <SelectItem value="건대권">건대권</SelectItem>
+              </SelectContent>
+            </Select>
+            
             <Button
               variant={filterType === 'all' ? 'default' : 'outline'}
               onClick={() => setFilterType('all')}
@@ -353,6 +447,13 @@ const PartyRecruitment = () => {
             >
               협력
             </Button>
+            <Button
+              variant={filterType === '추리' ? 'default' : 'outline'}
+              onClick={() => setFilterType('추리')}
+              size="sm"
+            >
+              추리
+            </Button>
           </div>
         </div>
 
@@ -364,6 +465,9 @@ const PartyRecruitment = () => {
                 <div className="flex items-center justify-between mb-3">
                   <Badge className="bg-blue-100 text-blue-800">
                     {party.gameType}
+                  </Badge>
+                  <Badge variant="outline" className="text-xs border-green-200 text-green-700">
+                    {getLocationArea(party.location)}
                   </Badge>
                 </div>
                 

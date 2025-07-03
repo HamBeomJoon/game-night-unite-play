@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users, Clock, Star, PlayCircle, BookOpen } from 'lucide-react';
@@ -7,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import RatingForm from '@/components/RatingForm';
+import UserRating from '@/components/UserRating';
+import { UserProfile } from '@/types/user';
 
 const GameDetail = () => {
   const { gameId } = useParams();
@@ -58,11 +61,64 @@ const GameDetail = () => {
     videoUrl: "https://www.youtube.com/watch?v=example"
   };
 
+  // 샘플 사용자 평점 데이터
+  const userReviews = [
+    {
+      user: {
+        id: "1",
+        username: "게임러버",
+        rating: 4.8,
+        totalReviews: 23,
+        completedTrades: 5,
+        completedParties: 18,
+        joinedDate: "2024-01-15",
+        badges: ["룰마스터", "친근한호스트"]
+      } as UserProfile,
+      rating: 5,
+      comment: "정말 재미있는 게임입니다! 전략적 사고가 필요하지만 규칙은 간단해서 누구나 쉽게 배울 수 있어요.",
+      date: "2024-12-15"
+    },
+    {
+      user: {
+        id: "2",
+        username: "보드게임마니아",
+        rating: 4.6,
+        totalReviews: 15,
+        completedTrades: 2,
+        completedParties: 25,
+        joinedDate: "2024-03-20",
+        badges: ["전략왕"]
+      } as UserProfile,
+      rating: 4,
+      comment: "좋은 게임이에요. 다만 초반에 운이 좀 따라줘야 하는 부분이 있어서 4점 드립니다.",
+      date: "2024-12-10"
+    },
+    {
+      user: {
+        id: "3",
+        username: "파티왕",
+        rating: 4.9,
+        totalReviews: 31,
+        completedTrades: 12,
+        completedParties: 22,
+        joinedDate: "2023-11-10",
+        badges: ["모임왕", "분위기메이커"]
+      } as UserProfile,
+      rating: 5,
+      comment: "친구들과 함께 하기 정말 좋은 게임! 매번 할 때마다 새로운 전략을 시도해볼 수 있어요.",
+      date: "2024-12-05"
+    }
+  ];
+
   const handleGameRating = (rating: number, comment: string) => {
     // 실제로는 API 호출을 통해 서버에 평점을 저장해야 함
     console.log('게임 평점 제출:', { gameId, rating, comment });
     // 성공 메시지 표시 (toast 등)
     alert(`평점 ${rating}점이 성공적으로 제출되었습니다!`);
+  };
+
+  const handleRecruitParty = () => {
+    navigate('/party');
   };
 
   return (
@@ -121,7 +177,10 @@ const GameDetail = () => {
             <p className="text-gray-700 mb-6">{gameData.description}</p>
             
             <div className="flex gap-3">
-              <Button className="bg-orange-500 hover:bg-orange-600">
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600"
+                onClick={handleRecruitParty}
+              >
                 <Users className="w-4 h-4 mr-2" />
                 일행 모집하기
               </Button>
@@ -134,11 +193,12 @@ const GameDetail = () => {
         </div>
 
         <Tabs defaultValue="rules" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="rules">게임 방법</TabsTrigger>
             <TabsTrigger value="components">구성품</TabsTrigger>
             <TabsTrigger value="tips">팁 & 전략</TabsTrigger>
             <TabsTrigger value="info">게임 정보</TabsTrigger>
+            <TabsTrigger value="reviews">사용자 평점</TabsTrigger>
             <TabsTrigger value="rating">평점 남기기</TabsTrigger>
           </TabsList>
           
@@ -218,6 +278,44 @@ const GameDetail = () => {
                     <span className="ml-2 font-medium">{gameData.year}</span>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="reviews" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-yellow-500" />
+                  사용자 평점 ({userReviews.length}개)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {userReviews.map((review, index) => (
+                  <div key={index} className="border-b border-gray-100 pb-4 last:border-b-0">
+                    <div className="flex items-start justify-between mb-3">
+                      <UserRating user={review.user} showDetails={true} />
+                      <div className="flex items-center gap-1">
+                        <div className="flex">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`w-4 h-4 ${
+                                star <= review.rating
+                                  ? 'text-yellow-500 fill-current'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-sm text-gray-500 ml-2">{review.date}</span>
+                      </div>
+                    </div>
+                    {review.comment && (
+                      <p className="text-gray-700 mt-2">{review.comment}</p>
+                    )}
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </TabsContent>
